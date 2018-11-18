@@ -21,50 +21,49 @@ var YOU_BAR_COLOR = 'rgba(255, 0, 0, 1)';
 var BAR_COLOR = 'rgba(0, 0 , 255, ';
 
 window.renderStatistics = function (ctx, names, times) {
-  var maxTime = getMaxValue(times);
+  var maxTime = getMaxTime(times);
   renderCloud(ctx);
   renderHistogram(ctx, names, times, maxTime);
 };
 var renderCloud = function (ctx) {
   renderShape(ctx, CLOUD_X + GAP, CLOUD_Y + GAP, CLOUD_WIDTH, CLOUD_HEIGHT, CLOUD_SHADOW_COLOR);
   renderShape(ctx, CLOUD_X, CLOUD_Y, CLOUD_WIDTH, CLOUD_HEIGHT, CLOUD_COLOR);
-  renderText(ctx, FONT_STYLE, FONT_COLOR, TEXT_BASELINE, TEXT_WIN, CLOUD_X + TEXT_OFFSET, CLOUD_Y + TEXT_OFFSET);
-  renderText(ctx, FONT_STYLE, FONT_COLOR, TEXT_BASELINE, TEXT_RESULT, CLOUD_X + TEXT_OFFSET, CLOUD_Y + TEXT_OFFSET * 2);
+  renderText(ctx, TEXT_WIN, CLOUD_X + TEXT_OFFSET, CLOUD_Y + TEXT_OFFSET);
+  renderText(ctx, TEXT_RESULT, CLOUD_X + TEXT_OFFSET, CLOUD_Y + TEXT_OFFSET * 2);
 };
 var renderHistogram = function (ctx, names, times, maxTime) {
   var barX = CLOUD_X + BAR_OFFSET;
   var barY = CLOUD_Y + CLOUD_HEIGHT - BAR_OFFSET;
   for (var i = 0; i < names.length; i++) {
-    var tempBarHeight = times[i] * BAR_HEIGHT / maxTime;
-    var tempOffsetX = (BAR_WIDTH + BAR_GAP) * i;
-    var tempRandomColor = getRandomColor();
-    var tempColor = (names[i] === TEXT_YOU) ? YOU_BAR_COLOR : tempRandomColor;
-    renderColumn(ctx, names[i], times[i], barX, barY, tempBarHeight, tempOffsetX, tempColor);
+    var barHeight = times[i] * BAR_HEIGHT / maxTime;
+    var offsetX = (BAR_WIDTH + BAR_GAP) * i;
+    var сolor = (names[i] === TEXT_YOU) ? YOU_BAR_COLOR : getRandomBarColor();
+    renderColumn(ctx, names[i], times[i], barX, barY, barHeight, offsetX, сolor);
   }
 };
 var renderColumn = function (ctx, name, time, x, y, barHeight, offsetX, color) {
   renderShape(ctx, x + offsetX, y - barHeight, BAR_WIDTH, barHeight, color);
-  renderText(ctx, FONT_STYLE, FONT_COLOR, TEXT_BASELINE, name, x + offsetX, y + TEXT_OFFSET / 2);
-  renderText(ctx, FONT_STYLE, FONT_COLOR, TEXT_BASELINE, Math.floor(time), x + offsetX, y - barHeight - TEXT_OFFSET);
+  renderText(ctx, name, x + offsetX, y + TEXT_OFFSET / 2);
+  renderText(ctx, Math.floor(time), x + offsetX, y - barHeight - TEXT_OFFSET);
 };
 var renderShape = function (ctx, x, y, width, height, color) {
   ctx.fillStyle = color;
   ctx.fillRect(x, y, width, height);
 };
-var renderText = function (ctx, font, color, baseline, text, x, y) {
-  ctx.font = font;
-  ctx.fillStyle = color;
-  ctx.textBaseline = baseline;
+var renderText = function (ctx, text, x, y) {
+  ctx.font = FONT_STYLE;
+  ctx.fillStyle = FONT_COLOR;
+  ctx.textBaseline = TEXT_BASELINE;
   ctx.fillText(text, x, y);
 };
-var getRandomColor = function () {
+var getRandomBarColor = function () {
   return BAR_COLOR + Math.random() + ')';
 };
-var getMaxValue = function (temp) {
-  var maxValue = 0;
-  for (var i = 0; i < temp.length; i++) {
-    maxValue = (temp[i] > maxValue) ? temp[i] : maxValue;
+var getMaxTime = function (times) {
+  var maxTime = 0;
+  for (var i = 0; i < times.length; i++) {
+    maxTime = (times[i] > maxTime) ? times[i] : maxTime;
   }
-  return maxValue;
+  return maxTime;
 };
 
