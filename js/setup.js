@@ -16,26 +16,39 @@ var getRandomNum = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 // ----------------------------------------------------------------------------
+var getWizardElement = function () {
+  return document.querySelector('#similar-wizard-template').content.cloneNode(true);
+};
+// ----------------------------------------------------------------------------
+var setWizardData = function (domTemplate, player) {
+  domTemplate.querySelector('.setup-similar-label').textContent = player.name;
+  domTemplate.querySelector('.wizard-coat').style.fill = player.coatColor;
+  domTemplate.querySelector('.wizard-eyes').style.fill = player.eyesColor;
+  return domTemplate;
+};
+// ----------------------------------------------------------------------------
 var render = function (players) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < PLAYERS_COUNT; i++) {
-    var element = document.querySelector('#similar-wizard-template').content.cloneNode(true);
-    element.querySelector('.setup-similar-label').textContent = players[i].name;
-    element.querySelector('.wizard-coat').style.fill = players[i].coatColor;
-    element.querySelector('.wizard-eyes').style.fill = players[i].eyesColor;
-    fragment.appendChild(element);
+    var element = getWizardElement();
+    fragment.appendChild(setWizardData(element, players[i]));
   }
   document.querySelector('.setup-similar-list').appendChild(fragment);
+};
+// ----------------------------------------------------------------------------
+var generateWizard = function (arrayElement) {
+  arrayElement.push({
+    name: NAMES[getRandomNum(0, NAMES.length - 1)] + ' ' + SURNAMES[getRandomNum(0, SURNAMES.length - 1)],
+    coatColor: COAT_COLORS[getRandomNum(0, COAT_COLORS.length - 1)],
+    eyesColor: EYES_COLORS[getRandomNum(0, EYES_COLORS.length - 1)]
+  });
+  return arrayElement;
 };
 // ----------------------------------------------------------------------------
 var getDataArray = function () {
   var result = [];
   for (var i = 0; i < PLAYERS_COUNT; i++) {
-    result.push({
-      name: NAMES[getRandomNum(0, NAMES.length - 1)] + ' ' + SURNAMES[getRandomNum(0, SURNAMES.length - 1)],
-      coatColor: COAT_COLORS[getRandomNum(0, COAT_COLORS.length - 1)],
-      eyesColor: EYES_COLORS[getRandomNum(0, EYES_COLORS.length - 1)]
-    });
+    result = generateWizard(result);
   }
   return result;
 };
